@@ -61,6 +61,7 @@ if st.button("Submit"):
                 "cv_text": resume_text, # <-- [NEW] Pass the extracted text directly
                 "job_role": job_role,
                 "job_company": job_company,
+                "job_country": job_country,   # <-- [New] Add variable job_country here
                 "questions": {},
                 "interview_transcript": [],
                 "final_review": "",

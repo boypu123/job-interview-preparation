@@ -14,7 +14,8 @@ class InterviewWorkflowState(TypedDict):
     cv_text: str      # <-- [NEW] This is now an input
     job_role: str
     job_company: str
-    
+    job_country: str  # <-- [New] New input job_country
+
     # Outputs from the pipeline
     questions: Dict[str, List[str]]
     interview_transcript: List[Dict[str, str]]
