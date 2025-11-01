@@ -13,14 +13,15 @@ st.title("Welcome to Job Interview Prep Agent!")
 name = st.text_input("What is your name?")
 job_role = st.text_input("Which role have you applied to?")
 job_company = st.text_input("Which company have you applied to?")
+job_country = st.text_input("What country have you applied to?")
 
 uploaded_file = st.file_uploader("Upload your CV/resume", type=["pdf", "doc", "docx"])
 
 # Submit button
 if st.button("Submit"):
-    if name and uploaded_file and job_role and job_company:
+    if name and uploaded_file and job_role and job_company and job_country:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"{job_role}_{job_company}_{timestamp}_{uploaded_file.name}"
+        filename = f"{job_role}_{job_company}_{job_country}_{timestamp}_{uploaded_file.name}"
         file_path = os.path.join(UPLOAD_DIR, filename)
 
         # Save the uploaded file
@@ -39,7 +40,7 @@ if st.button("Submit"):
 
         # Save metadata
         with open(os.path.join(UPLOAD_DIR, "metadata.txt"), "a") as meta:
-            meta.write(f"{datetime.now()} | {name} | {job_role} | {job_company} | {filename}\n")
+            meta.write(f"{datetime.now()} | {name} | {job_role} | {job_company} | {job_country} | {filename}\n")
 
         st.info("Metadata recorded successfully!")
     else:
