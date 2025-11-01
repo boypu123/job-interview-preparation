@@ -1,6 +1,9 @@
 import streamlit as st
 import os
 from datetime import datetime
+from helpers import extract_text
+import PyPDF2
+import docx
 
 UPLOAD_DIR = "uploads"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -20,16 +23,24 @@ if st.button("Submit"):
         filename = f"{job_role}_{job_company}_{timestamp}_{uploaded_file.name}"
         file_path = os.path.join(UPLOAD_DIR, filename)
 
-        # Save the file
+        # Save the uploaded file
         with open(file_path, "wb") as f:
             f.write(uploaded_file.getbuffer())
 
         st.success(f"File saved as `{filename}`")
 
-        # Optionally save metadata
+        # Extract text from the file
+        resume_text = extract_text(file_path)
+        if resume_text:
+            st.subheader("Extracted Resume Text (Preview)")
+            st.text_area("Resume Text", resume_text[:1000], height=300)
+        else:
+            st.warning("No text could be extracted from this file.")
+
+        # Save metadata
         with open(os.path.join(UPLOAD_DIR, "metadata.txt"), "a") as meta:
-            meta.write(f"{datetime.now()} | {job_role} | {job_company} | {filename}\n")
+            meta.write(f"{datetime.now()} | {name} | {job_role} | {job_company} | {filename}\n")
 
         st.info("Metadata recorded successfully!")
     else:
-        st.write("Please upload your CV/resume and enter all your details to proceed.")
+        st.error("Please upload your CV/resume and enter all your details to proceed.")
