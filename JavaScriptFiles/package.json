@@ -1,0 +1,28 @@
+{
+  "name": "agentversehack",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"vite\" \"node server/index.js\"",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@anam-ai/js-sdk": "^4.4.0",
+    "@vicons/ionicons5": "^0.13.0",
+    "axios": "^1.13.1",
+    "dotenv": "^16.6.1",
+    "express": "^4.21.2",
+    "ionicons": "^8.0.13",
+    "naive-ui": "^2.43.1",
+    "pdfjs-dist": "^4.10.38",
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.3",
+    "concurrently": "^9.2.1",
+    "vite": "^6.2.4",
+    "vite-plugin-vue-devtools": "^7.7.2"
+  }
+}
