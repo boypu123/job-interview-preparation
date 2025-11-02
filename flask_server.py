@@ -6,21 +6,12 @@ from flask_cors import CORS  # <-- [NEW] 1. Import CORS
 from typing import TypedDict, List, Dict
 
 # --- 1. Import your "workstations" (nodes) ---
-from helpers import extract_text 
 from question_generator import generate_questions_node 
-# from critic import generate_critique_node 
+from critic import generate_critic_node 
 
 # --- 2. Define the "conveyor belt" (State) ---
-# (This is just to make your code clearer, Flask doesn't use it directly)
-class InterviewWorkflowState(TypedDict):
-    cv_text: str
-    job_role: str
-    job_company: str
-    job_country: str
-    questions: Dict[str, List[str]]
-    interview_transcript: List[Dict[str, str]]
-    final_review: str
-    error: str
+# [THE FIX] We now import the single source of truth
+from shared_types import InterviewWorkflowState
 
 # --- 3. Build the Flask "shopfront" ---
 app = Flask(__name__)
@@ -120,7 +111,7 @@ def finish_interview_session():
         
         # D. !! [MANUALLY] call "workstation 3" (Critic) !!
         print("--- [API /finish]: Calling Critic Node ---")
-        critic_result = generate_critique_node(state_for_critic) 
+        critic_result = generate_critic_node(state_for_critic) 
         
         if "error" in critic_result:
             raise Exception(critic_result["error"])
