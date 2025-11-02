@@ -4,7 +4,6 @@ from langgraph.graph import StateGraph, END
 
 # --- 1. Import the [simplified] workstations (nodes) ---
 from question_generator import generate_questions_node 
-from anam_interviewer import run_interview_node
 from critic import generate_critique_node
 
 # --- 2. Define the [new] "conveyor belt" (State) ---

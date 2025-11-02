@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 
 # --- Optional: Import your workflow state type ---
 try:
-    from main_orchestrator import InterviewWorkflowState
+    from shared_types import InterviewWorkflowState
 except ImportError:
     from typing import TypedDict
     class InterviewWorkflowState(TypedDict):
@@ -54,9 +54,9 @@ The user has uploaded:
     •   The job title and company ({job_role} at {job_company})
     •   The transcript or summary of their mock interview ({interview_transcript})
 
-The AI’s goal is to evaluate how well the candidate performed in that interview, how closely they fit the job, and how they can improve for the next one.
+The AI's goal is to evaluate how well the candidate performed in that interview, how closely they fit the job, and how they can improve for the next one.
 
-The AI must be agentic — meaning it doesn’t just passively summarize; it acts by:
+The AI must be agentic — meaning it doesn't just passively summarize; it acts by:
     •   Diagnosing strengths and weaknesses,
     •   Generating an improvement plan,
     •   Identifying resources or learning strategies,
@@ -66,10 +66,10 @@ The AI must be agentic — meaning it doesn’t just passively summarize; it act
 
 TASK
 
-Analyze the candidate’s interview responses, resume, and job description to produce a Post-Interview Intelligence Report.
+Analyze the candidate's interview responses, resume, and job description to produce a Post-Interview Intelligence Report.
 The report should highlight:
-    1. How effectively the candidate’s responses matched the job’s requirements
-    2. The candidate’s communication style, reasoning, and confidence
+    1. How effectively the candidate's responses matched the job's requirements
+    2. The candidate's communication style, reasoning, and confidence
     3. Skill and behavior patterns inferred from their answers
     4. Specific improvement steps and learning resources
 
@@ -79,21 +79,21 @@ INSTRUCTION
 
 Follow this structure strictly when generating your output:
 
-1. Performance Summary (3–4 sentences)
+1. Performance Summary (3-4 sentences)
 
 Summarize how the candidate performed in the interview — preparation level, clarity, relevance, confidence, and communication.
 
 2. Strengths
 
-List 3–5 clear strengths, backed by brief explanations from their responses or resume.
+List 3-5 clear strengths, backed by brief explanations from their responses or resume.
 
 3. Weaknesses / Gaps
 
-Identify 2–4 weaknesses or areas of improvement. Mention which job skills or qualities these impact.
+Identify 2-4 weaknesses or areas of improvement. Mention which job skills or qualities these impact.
 
 4. Fit Assessment
 
-Category    Score (0–100%)   Justification
+Category    Score (0-100%)   Justification
 Skill Fit       
 Behavioral Fit       
 Growth Potential       
@@ -117,12 +117,12 @@ Suggest one next step the AI itself could take — for example:
     •   Generate flashcards or practice questions
     •   Create a learning timeline
 
-Example 1: PASS CASE – Strong Candidate
+Example 1: PASS CASE - Strong Candidate
 
 Performance Summary:
 The candidate displayed a deep understanding of backend architecture, API optimization, and security concepts. Their examples reflected production-level exposure and clear communication under pressure. Behavioral responses were authentic and introspective. Minor hesitations in advanced system design did not detract from their overall performance.
 
-Decision: PASS – Recommended for Final Round
+Decision: PASS - Recommended for Final Round
 They demonstrated technical maturity and growth readiness aligned with Google’s engineering standards.
 
 Strengths:
@@ -142,19 +142,19 @@ Growth Potential	95%	Learns rapidly and adapts
 
 Improvement Plan:
 	•	Revise advanced scaling techniques (load balancing, microservices, message queues).
-	•	Practice 2–3 mock system design sessions to improve delivery structure.
+	•	Practice 2-3 mock system design sessions to improve delivery structure.
 
 Next Steps (Agentic AI Actions):
 	•	Schedule a mock advanced round within 3 days.
 	•	Prepare system design flashcards based on previous weak topics.
 	•	Notify candidate when all preparatory material is complete.
 
-Example 2: FAIL CASE – Needs Improvement
+Example 2: FAIL CASE - Needs Improvement
 
 Performance Summary:
 The candidate demonstrated enthusiasm and basic understanding but struggled to articulate concepts related to scalability, testing, and async workflows. Behavioral responses were polite yet lacked initiative examples. Confidence fluctuated when questions became scenario-based.
 
-Decision: FAIL – Needs Improvement Before Next Attempt
+Decision: FAIL - Needs Improvement Before Next Attempt
 Insufficient technical depth for the applied role. Shows strong potential if gaps are addressed systematically.
 
 Strengths:

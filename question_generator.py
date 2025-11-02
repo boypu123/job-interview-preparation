@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field
 # --- 2. Import the "conveyor belt" definition (State) ---
 # (This allows VS Code to autocomplete state fields)
 try:
-    from main_orchestrator import InterviewWorkflowState
+    from shared_types import InterviewWorkflowState
 except ImportError:
     # This is a fallback, just in case
     print("Warning: Could not import InterviewWorkflowState. Using basic TypedDict.")
