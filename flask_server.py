@@ -41,41 +41,35 @@ global_session_store = {}
 def start_interview_session():
     print("\n--- [API /start]: Received new session request ---")
     try:
-        # A. Get data from the frontend's form
-        if 'cv_file' not in request.files:
-            return jsonify({"error": "No cv_file part"}), 400
-        
-        cv_file = request.files['cv_file']
-        job_role = request.form['job_role']
-        job_company = request.form['job_company']
-        job_country = request.form['job_country']
+        # A. Get data from frontend JSON
+        data = request.get_json()
+        cv_text = data.get("cv_text")
+        job_role = data.get("job_role")
+        job_company = data.get("job_company")
+        job_country = data.get("job_country")
 
-        # B. Save file and extract text (from helpers.py)
-        file_path = os.path.join("uploads", cv_file.filename)
-        cv_file.save(file_path)
-        cv_text = extract_text(file_path) 
-
+        print(f"Received job_role: {job_role}, job_company: {job_company}, job_country: {job_country}")
         if not cv_text:
-            return jsonify({"error": "Could not extract text from file"}), 400
+            return jsonify({"error": "cv_text missing"}), 400
 
-        # C. Prepare the "conveyor belt" (State)
+        # B. Prepare the state
         state_for_questions = {
             "cv_text": cv_text,
             "job_role": job_role,
             "job_company": job_company,
             "job_country": job_country
         }
-        
-        # D. !! [MANUALLY] call your "workstation" !!
+
+        # C. Call question generator node
         print("--- [API /start]: Calling Question Generator Node ---")
         question_result = generate_questions_node(state_for_questions)
-        
+
         if "error" in question_result:
             raise Exception(question_result["error"])
-        
+
         questions = question_result.get("questions")
-        
-        # E. Save the session
+
+        # D. Save session
         session_id = "session_" + str(hash(cv_text))
         global_session_store[session_id] = {
             "cv_text": cv_text,
@@ -84,15 +78,15 @@ def start_interview_session():
             "job_country": job_country,
             "questions": questions
         }
-        
+
         print(f"--- [API /start]: Session {session_id} created. Returning questions. ---")
-        
-        # F. Send the [questions] and [ID] back to Vue.js
+
         return jsonify({"session_id": session_id, "questions": questions})
 
     except Exception as e:
         print(f"!! ERROR in /start: {e} !!")
         return jsonify({"error": str(e)}), 500
+
 
 
 # --- 5. API Endpoint 2: /api/finish ---
