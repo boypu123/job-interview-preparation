@@ -42,6 +42,16 @@ async function startChat() {
   }
 }
 
+const chatHistory = ref([])
+function updateChatHistory(messages){
+  chatHistory.value = messages
+}
+
+anamClient.addListener(AnamEvent.MESSAGE_HISTORY_UPDATED, (messages) => {
+  console.log('Conversation updated:', messages);
+  updateChatHistory(messages);
+});
+
 function stopChat() {
   if (anamClient) {
     anamClient.stopStreaming?.()
@@ -50,7 +60,11 @@ function stopChat() {
   const v = document.getElementById('persona-video')
   if (v) v.srcObject = null
   canStop.value = false
+  
 }
+
+
+
 onBeforeUnmount(() => stopChat())
 </script>
 
