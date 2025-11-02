@@ -3,10 +3,13 @@ import { ref, onBeforeUnmount, inject } from 'vue'
 import { createClient } from '@anam-ai/js-sdk'
 import axios from 'axios'
 import { FORM_CTX_KEY } from '@/components/formCtx'
+import { AnamEvent } from '@anam-ai/js-sdk'
 
 const starting = ref(false)
 const canStop = ref(false)
 let anamClient = null
+let sessionId = null
+let finalReview = ref('')
 
 const form = inject(FORM_CTX_KEY)
 if (!form) throw new Error('Missing formCtx provide. Make sure ancestor provides it.')
@@ -21,10 +24,13 @@ async function startChat() {
       }
     }
     const resp = await axios.post('/api/session-token', payload)
-    const { sessionToken } = resp.data
+    const { sessionToken, sessionId: flaskSessionId } = resp.data
+    sessionId = flaskSessionId
+    console.log('Flask sessionId:', sessionId)
 
     anamClient = createClient(sessionToken)
     await anamClient.streamToVideoElement('persona-video')
+    bindAnamListeners()
 
     const videoEl = document.getElementById('persona-video')
     if (videoEl) {
@@ -47,20 +53,40 @@ function updateChatHistory(messages){
   chatHistory.value = messages
 }
 
-anamClient.addListener(AnamEvent.MESSAGE_HISTORY_UPDATED, (messages) => {
-  console.log('Conversation updated:', messages);
-  updateChatHistory(messages);
-});
 
-function stopChat() {
+function bindAnamListeners() {
+  anamClient.addListener(AnamEvent.MESSAGE_HISTORY_UPDATED, (messages) => {
+    console.log('Conversation updated:', messages)
+    chatHistory.value = messages
+  })
+}
+
+async function stopChat() {
   if (anamClient) {
     anamClient.stopStreaming?.()
+
+    // 将对话记录整理为文本
+    const transcript = chatHistory.value
+      .map((m) => `${m.role}: ${m.content}`)
+      .join('\n')
+
+    // 如果有 sessionId，就向 Flask /api/finish 汇总
+    if (sessionId && transcript) {
+      try {
+        console.log('📤 Sending transcript to Flask /api/finish ...')
+        const finishResp = await axios.post('http://127.0.0.1:5000/api/finish', {
+          session_id: sessionId,
+          transcript,
+        })
+        console.log('✅ Final review from Flask:', finishResp.data.final_review)
+        finalReview.value = finishResp.data.final_review || '(No review text)'
+      } catch (err) {
+        console.error('❌ Failed to finish interview:', err.response?.data || err)
+      }
+    }
+
     anamClient = null
   }
-  const v = document.getElementById('persona-video')
-  if (v) v.srcObject = null
-  canStop.value = false
-  
 }
 
 
@@ -77,6 +103,9 @@ onBeforeUnmount(() => stopChat())
         {{ starting ? 'Starting…' : 'Start Chat' }}
       </button>
       <button :disabled="!canStop" @click="stopChat">Stop Chat</button>
+    </div>
+    <div style="margin-top:20px;">
+      <p>Final Review: {{ finalReview }}</p>
     </div>
   </div>
 </template>

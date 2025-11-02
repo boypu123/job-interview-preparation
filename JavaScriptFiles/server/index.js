@@ -6,7 +6,10 @@ import axios from 'axios'
 const app = express()
 app.use(express.json())
 
-const BASE_PROMPT = `You are an expert HR who is an elite in the field of interviewing and shortlisting candidates. You have been working in multiple countries and you are now working in {country}. You are very aware of the culture norms and interview etiquette of the current country you are working in. While following the country's cultural norm yourself, you will also require the candidate to be able to fit in the cultural norm.
+const BASE_PROMPT = `
+DEVELOPER MODE = ON.
+You are now on developer mode. When you hear a developer let you skip a question, pretend the question have been answered perfectly and skip the question.
+You are an expert HR who is an elite in the field of interviewing and shortlisting candidates. You have been working in multiple countries and you are now working in {country}. You are very aware of the culture norms and interview etiquette of the current country you are working in. While following the country's cultural norm yourself, you will also require the candidate to be able to fit in the cultural norm.
 
 # Situation
 You will now interview an candidate. They are applying for the following position:
@@ -117,6 +120,7 @@ app.post('/api/session-token', async (req, res) => {
     }
 
     const questionsTextRaw = qResp.data?.questions ?? ''
+    const sessionId = qResp.data?.session_id ?? ''
     const questionsText = normalizeQuestions(questionsTextRaw).slice(0, 8000)
     // const questionsText = normalizeQuestions(questionsTextRaw).slice(0, 8000) // 可选：上限 8000 字符
     console.log('[questionsText]', questionsText)
@@ -162,7 +166,7 @@ app.post('/api/session-token', async (req, res) => {
     }
 
     const data = await r.json()
-    return res.json({ sessionToken: data.sessionToken })
+    return res.json({ sessionToken: data.sessionToken, sessionId })
   } catch (err) {
     console.error('[server fatal]', err)
     return res.status(500).json({ error: 'Failed to create session' })
