@@ -208,7 +208,7 @@ def generate_critic_node(state: InterviewWorkflowState) -> Dict:
         }
         print(f"Generating post-interview report for {inputs['job_role']} at {inputs['job_company']}")
         report = answer_chain.invoke(inputs)
-        return {"post_interview_report": report}
+        return {"final_review": report}
     except Exception as e:
         print(f"!! ERROR in Post-Interview Analysis Node: {e}")
         return {"error": f"Failed to generate report: {e}"}
@@ -239,4 +239,4 @@ and described leadership experience managing a small engineering team.
         print(result["error"])
     else:
         print("\n--- TEST SUCCEEDED ---")
-        print(json.dumps(result["post_interview_report"], indent=2))
+        print(json.dumps(result["final_review"], indent=2))
