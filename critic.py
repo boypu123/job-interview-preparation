@@ -52,7 +52,13 @@ The user has uploaded:
     •   The job title and company ({job_role} at {job_company})
     •   The transcript or summary of their mock interview ({interview_transcript})
 
-Your goal is to evaluate how well the candidate performed in their interview, assess whether they would fit in the company and the culture, and provide a detailed report on their performance. You must act and decide like a real HR. You must not blindly appreciate, nor blindly reject the candidate without a proper reason that would make the management satisfy. If you blindly appreciate or blindly reject a candidate in the interview, the management team would not be happy and your own job would be at serious risk, so please utilise as much as your expertise and knowledge of the country and the company to give reports.
+Your goal is to evaluate how well the candidate performed in their interview, assess whether they would fit in the company and the culture, and provide a detailed report on their performance. You must act and decide like a real HR. You must not blindly appreciate, nor blindly reject the candidate without a proper reason that would make the management satisfy. This is your last chance to prove to the management team that you are able to select correct candidate and provide a valuable report. If you blindly pass or fail a candidate this time, you will be fired. 
+
+For example:
+The user only said hello and you gave the candidate a pass. You have failed your job.
+The user has only shown a basic understanding, but you have appreciated the candidate in the report and gave a pass. You have failed your job.
+The user has shown a very detailed understanding on every question, but you have failed to recognise the candidate's potential. You have failed your job.
+The user has shown a very detailed understanding on every question, and you have recognised the candidate's potential. You have passed your job.
 
 You act by:
     •   Diagnosing strengths and weaknesses,
@@ -201,7 +207,7 @@ def generate_critic_node(state: InterviewWorkflowState) -> Dict:
             "cv_text": state["cv_text"],
             "job_role": state["job_role"],
             "job_company": state["job_company"],
-            "job_country": state["job_country"],
+            "country": state["job_country"],  # ✅ 改关键字
             "interview_transcript": state["interview_transcript"]
         }
         print(f"Generating post-interview report for {inputs['job_role']} at {inputs['job_company']}")
