@@ -44,10 +44,10 @@ async function handleFileUpload(e){
       alert('Unsupported file type. Please upload a text or PDF file.')
       return
     }
-    form.value.parsedText = String(text).trim()   // 👈 解析结果直接写回 form
-    console.log('✅ Parsed file content:', form.value.parsedText.slice(0, 1000))
+    form.value.parsedText = String(text).trim()  
+    console.log('Parsed file content:', form.value.parsedText.slice(0, 1000))
   }catch(err){
-    console.error('❌ File parsing failed:', err)
+    console.error('File parsing failed:', err)
     alert('File parsing failed. Please upload a valid file.')
   }finally{
     isThinking.value = false
@@ -70,7 +70,7 @@ function readTextFile(file){
 
 function onSubmit(){
   if (!validate()) return
-  console.log('📤 Submitted form:', {
+  console.log('Submitted form:', {
     ...form.value,
     parsedTextPreview: form.value.parsedText.slice(0, 1000),
   })
